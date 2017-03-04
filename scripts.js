@@ -29,4 +29,19 @@ function paintToCanvas() {
   }, 16);
 }
 
+function takePhoto() {
+  snap.currentTime = 0;
+  // Plays audio camera click
+  snap.play();
+
+  const data = canvas.toDataURL('image/jpeg');
+  const link = document.createElement('a');
+  link.href = data;
+  link.setAttribute('download', 'snapshot');
+  link.innerHTML = `<img src="${data}" alt="snapshot" />`;
+  strip.insertBefore(link, strip.firstChild);
+}
+
 getVideo();
+
+video.addEventListener('canplay', paintToCanvas);
