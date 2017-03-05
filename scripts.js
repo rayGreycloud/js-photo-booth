@@ -32,6 +32,7 @@ function paintToCanvas() {
     // Manipulate
     // pixels = redEffect(pixels);
     pixels = rgbSplit(pixels);
+    // pixels = greenScreen(pixels);
 
     // Return to canvas
     ctx.putImageData(pixels, 0, 0);
@@ -61,11 +62,37 @@ function redEffect(pixels) {
 }
 
 function rgbSplit(pixels) {
-  for(let i = 0; i < pixels.data.length; i +=4) {
+  for (let i = 0; i < pixels.data.length; i += 4) {
     pixels.data[i - 150] = pixels.data[i];
     pixels.data[i + 100] = pixels.data[i + 1];
     pixels.data[i -150] = pixels.data[i + 2];
   }
+  return pixels;
+}
+// Crashes browser - how did it work on Bos video?
+function greenScreen(pixels) {
+  const levels = {};
+
+  document.querySelectorAll('.rgb input').forEach(input => {
+    levels[input.name] = input.value;
+  });
+
+  for (i = 0; i < pixels.data.length; i = i + 4) {
+    red = pixels.data[i + 0];
+    green = pixels.data[i + 1];
+    blue = pixels.data[i + 2];
+    alpha = pixels.data[i + 3];
+
+    if (red >= levels.rmin
+      && green >= levels.gmin
+      && blue >= levels.bmin
+      && red <= levels.rmax
+      && green <= levels.gmax
+      && blue <= levels.bmax) {
+      pixels.data[i + 3] = 0;
+    }
+  }
+
   return pixels;
 }
 
